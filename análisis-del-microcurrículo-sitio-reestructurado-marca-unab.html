@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Análisis del Microcurrículo — Matemáticas 1° | UNAB</title>
+<style>
+  :root{
+    --naranja:#e9a427; --morado:#8600dd; --gris:#929496; --gris-claro:#f4f2ef;
+    --tinta:#2b2b2b; --tinta-suave:#555; --blanco:#ffffff; --crema:#fdfaf3;
+    --verde:#008e6c; --rojo:#cb1d11; --azul:#00aff1;
+    --sombra:0 10px 30px rgba(43,43,43,.10);
+    --radio:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"Open Sans","Segoe UI",system-ui,sans-serif;color:var(--tinta);background:var(--blanco);line-height:1.65;overflow-x:hidden}
+  /* ===== LEGAL VERTICAL (Manual de Marca UNAB) ===== */
+  .legal{position:fixed;left:0;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;text-orientation:mixed;
+    background:var(--tinta);color:#fff;font-size:.62rem;letter-spacing:.22em;padding:14px 5px;border-radius:0 8px 8px 0;z-index:60}
+  /* ===== RAIL ===== */
+  .rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:12px}
+  .rail a{width:11px;height:11px;border-radius:50%;background:#e3ddd2;border:2px solid #e3ddd2;display:block;transition:.3s}
+  .rail a.act{background:var(--naranja);border-color:var(--naranja);transform:scale(1.35)}
+  @media(max-width:820px){.rail{display:none}.legal{display:none}}
+  /* ===== HEADER UNAB ===== */
+  header{padding:26px 34px;display:flex;justify-content:space-between;align-items:center;background:var(--blanco);position:sticky;top:0;z-index:50;border-bottom:1px solid #efeae0}
+  .logo-unab{display:flex;align-items:center;gap:10px}
+  .logo-unab .marca{background:var(--naranja);color:#fff;font-weight:800;font-size:1.15rem;padding:7px 12px;border-radius:9px;letter-spacing:.03em}
+  .logo-unab .nombre{font-size:.68rem;color:var(--gris);text-transform:uppercase;letter-spacing:.14em;max-width:220px;line-height:1.35}
+  .tagline{font-size:.72rem;color:var(--gris);letter-spacing:.08em;text-transform:uppercase;text-align:right}
+  /* ===== HERO ===== */
+  .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+    padding:60px 22px;background:linear-gradient(180deg,var(--crema) 0%,#fff 100%);position:relative;overflow:hidden}
+  .hero .aurora{position:absolute;width:560px;height:560px;border-radius:50%;filter:blur(90px);opacity:.16;pointer-events:none}
+  .a1{background:var(--naranja);top:-160px;left:-120px}.a2{background:var(--morado);bottom:-200px;right:-100px}
+  .hero>*{position:relative;z-index:2}
+  .kicker{display:inline-block;background:#fff;border:1.5px solid var(--naranja);color:var(--tinta);font-size:.72rem;
+    font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:8px 16px;border-radius:999px;margin-bottom:26px;box-shadow:var(--sombra)}
+  .hero h1{font-size:clamp(2rem,5.2vw,3.6rem);font-weight:800;line-height:1.12;max-width:900px}
+  .hero h1 em{font-style:normal;color:var(--naranja)}
+  .hero h1 em.m{color:var(--morado)}
+  .hero p.sub{max-width:700px;margin:24px auto 0;color:var(--tinta-suave);font-size:1.05rem}
+  .hero .tesis{margin-top:30px;max-width:760px;background:#fff;border-left:5px solid var(--morado);padding:18px 22px;border-radius:0 var(--radio) var(--radio) 0;box-shadow:var(--sombra);text-align:left;font-size:.95rem}
+  .hero .tesis strong{color:var(--morado)}
+  .heroimg{margin-top:30px;display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .heroimg img{width:190px;border-radius:var(--radio);border:1.5px solid #efe8da;box-shadow:var(--sombra)}
+  .scroll-hint{margin-top:44px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--gris);font-size:.75rem;letter-spacing:.18em;text-transform:uppercase}
+  .scroll-hint .mouse{width:24px;height:38px;border:2px solid var(--gris);border-radius:13px;position:relative}
+  .scroll-hint .mouse::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:8px;background:var(--naranja);border-radius:3px;transform:translateX(-50%);animation:rueda 1.6s infinite}
+  @keyframes rueda{0%{opacity:1;top:7px}70%{opacity:0;top:20px}100%{opacity:0}}
+  /* ===== SECTIONS ===== */
+  section{max-width:980px;margin:0 auto;padding:90px 24px 30px;position:relative}
+  .num{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+  .num span.n{font-size:.8rem;font-weight:800;color:#fff;background:var(--naranja);padding:4px 11px;border-radius:8px}
+  .num span.n.m{background:var(--morado)}
+  h2{font-size:clamp(1.45rem,3vw,2.1rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+  .lead{color:var(--tinta-suave);max-width:760px;margin-bottom:34px}
+  .rv{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}.rv.d4{transition-delay:.48s}
+  /* fondo con imagen transparente (no del todo clara) */
+  .bgimg{position:absolute;top:40px;right:0;width:340px;opacity:.10;filter:saturate(.8);pointer-events:none;border-radius:var(--radio)}
+  /* ===== FLIP CARDS ===== */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:820px){.cards{grid-template-columns:1fr}}
+  .flip{background:#fff;border:1.5px solid #efe8da;border-radius:var(--radio);padding:24px;cursor:pointer;position:relative;min-height:220px;box-shadow:var(--sombra);transition:.35s;text-align:left}
+  .flip:hover{transform:translateY(-5px);border-color:var(--naranja)}
+  .flip .ic{font-size:1.9rem;margin-bottom:10px}
+  .flip img.tn{width:100%;max-width:120px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #efe8da;margin-bottom:10px}
+  .flip h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+  .flip p{font-size:.86rem;color:var(--tinta-suave)}
+  .flip .ref{display:block;margin-top:10px;font-size:.74rem;color:var(--morado);font-weight:700}
+  .flip .det{max-height:0;overflow:hidden;transition:max-height .5s ease}
+  .flip.open .det{max-height:460px}
+  .flip .det .resp{margin-top:14px;background:var(--crema);border-left:4px solid var(--morado);padding:12px 14px;border-radius:0 8px 8px 0;font-size:.83rem}
+  .flip .plus{position:absolute;top:18px;right:18px;width:26px;height:26px;border-radius:50%;background:var(--naranja);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;transition:.3s}
+  .flip.open .plus{transform:rotate(45deg);background:var(--morado)}
+  /* ===== MAPA CONCEPTUAL ===== */
+  .mapa-wrap{background:var(--crema);border-radius:var(--radio);padding:20px;border:1.5px solid #efe8da;box-shadow:var(--sombra)}
+  .mapa-svg{width:100%;height:auto;display:block}
+  .mapa-svg .nodo{cursor:pointer}
+  .mapa-svg .nodo rect{transition:.3s}
+  .mapa-svg .nodo:hover rect{filter:brightness(.94)}
+  .mapa-leyenda{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:.78rem;color:var(--tinta-suave)}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #e5ddcc;border-radius:999px;padding:4px 12px}
+  .chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .lectura{margin-top:18px;background:#fff;border-left:5px solid var(--naranja);padding:16px 20px;border-radius:0 10px 10px 0;font-size:.9rem;box-shadow:var(--sombra)}
+  /* ===== TABS PANEL MICROCURRÍCULO ===== */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .tab{border:1.5px solid #e5ddcc;background:#fff;border-radius:999px;padding:9px 18px;cursor:pointer;font-weight:700;font-size:.8rem;transition:.3s;color:var(--tinta)}
+  .tab:hover{border-color:var(--naranja)}
+  .tab.act{background:var(--naranja);border-color:var(--naranja);color:#fff}
+  .tabpane{display:none}.tabpane.act{display:block;animation:fadein .5s}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+  .panel{background:#fff;border-radius:var(--radio);border:1.5px solid #efe8da;padding:26px;box-shadow:var(--sombra)}
+  .panel h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--naranja);margin:14px 0 4px;font-weight:800}
+  .panel h4.m{color:var(--morado)}
+  .panel p,.panel li{font-size:.9rem;color:var(--tinta-suave)}
+  .panel ul{padding-left:20px;margin-top:6px}
+  .kv{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  @media(max-width:700px){.kv{grid-template-columns:1fr}}
+  .kv div{background:var(--crema);border-left:4px solid var(--naranja);border-radius:0 8px 8px 0;padding:10px 12px;font-size:.8rem}
+  .kv b{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--morado)}
+  .imgdoc{width:100%;border-radius:10px;border:1.5px solid #efe8da;margin-top:12px;box-shadow:var(--sombra)}
+  .doclink{display:inline-block;margin-top:10px;font-size:.78rem;font-weight:700;color:var(--morado)}
+  /* tablas de análisis con imagen asociada */
+  .tabla-an{display:grid;grid-template-columns:1fr 170px;gap:16px;align-items:start}
+  @media(max-width:700px){.tabla-an{grid-template-columns:1fr}}
+  .tabla-an img{width:100%;border-radius:10px;border:1.5px solid #efe8da;object-fit:cover;box-shadow:var(--sombra)}
+  .matriz{background:#fff;border-radius:var(--radio);border:1.5px solid #efe8da;overflow:hidden;box-shadow:var(--sombra)}
+  .matriz table{width:100%;border-collapse:collapse;font-size:.84rem}
+  .matriz th{background:var(--tinta);color:#fff;padding:13px 12px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em}
+  .matriz td{padding:13px 12px;border-bottom:1px solid #f1ebe0;vertical-align:top;color:var(--tinta-suave)}
+  .matriz td:first-child{font-weight:800;color:var(--tinta);white-space:nowrap}
+  .matriz tr:hover td{background:var(--crema)}
+  @media(max-width:720px){.matriz td:first-child{white-space:normal}}
+  /* ===== ACORDEÓN ===== */
+  .acc{border:1.5px solid #efe8da;border-radius:var(--radio);overflow:hidden;background:#fff;box-shadow:var(--sombra);margin-bottom:14px}
+  .acc-h{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;background:#fff;transition:.3s;list-style:none}
+  .acc-h:hover{background:var(--crema)}
+  .acc-h .ic{font-size:1.4rem}
+  .acc-h .tt{flex:1}
+  .acc-h .tt b{display:block;font-size:1rem}
+  .acc-h .tt small{color:var(--gris);font-size:.76rem}
+  .acc-h .chev{transition:.35s;color:var(--naranja);font-weight:800;font-size:1.2rem}
+  .acc.open .chev{transform:rotate(180deg)}
+  .acc-b{max-height:0;overflow:hidden;transition:max-height .7s ease}
+  .acc.open .acc-b{max-height:900px}
+  .acc-b .inner{padding:6px 24px 24px;border-top:1px dashed #e8e0d0}
+  .acc-b .inner p{font-size:.88rem;color:var(--tinta-suave)}
+  .verdicto{margin-top:12px;display:flex;gap:10px}
+  .verdicto .v{flex:1;border-radius:10px;padding:12px 14px;font-size:.8rem}
+  .v.ok{background:#eef8f3;border-left:4px solid var(--verde)}
+  .v.warn{background:#fdf6e8;border-left:4px solid var(--naranja)}
+  .v b{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+  .v.ok b{color:var(--verde)}.v.warn b{color:#b07712}
+  /* ===== QUIZ ===== */
+  .quiz{background:#fff;border:1.5px solid var(--naranja);border-radius:var(--radio);padding:26px;box-shadow:var(--sombra);margin-top:26px}
+  .quiz h3{font-size:1.1rem;font-weight:800;margin-bottom:6px}
+  .quiz .qq{margin-top:18px}
+  .quiz .qq p{font-weight:700;font-size:.9rem}
+  .quiz label{display:block;margin:7px 0;font-size:.85rem;color:var(--tinta-suave);cursor:pointer;border:1.5px solid #efe8da;border-radius:9px;padding:8px 12px;transition:.25s}
+  .quiz label:hover{border-color:var(--naranja)}
+  .quiz label.sel{border-color:var(--morado);background:#f7edff}
+  .quiz label.ok{border-color:var(--verde);background:#eef8f3}
+  .quiz label.bad{border-color:var(--rojo);background:#fdf0ee}
+  .btn-unab{background:var(--morado);color:#fff;border:none;border-radius:999px;padding:12px 26px;font-weight:800;font-size:.85rem;cursor:pointer;transition:.3s;box-shadow:var(--sombra)}
+  .btn-unab:hover{transform:translateY(-2px);background:var(--naranja)}
+  #quizResult{margin-top:14px;font-size:.88rem;font-weight:700;min-height:22px}
+  /* ===== SIMULACIÓN ===== */
+  .sim{background:linear-gradient(135deg,#fff,var(--crema));border:1.5px dashed var(--morado);border-radius:var(--radio);padding:26px;margin-top:24px;box-shadow:var(--sombra)}
+  .sim h3{font-weight:800;margin-bottom:4px}
+  .estaciones{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+  @media(max-width:820px){.estaciones{grid-template-columns:1fr}}
+  .est{background:#fff;border:1.5px solid #e5ddcc;border-radius:12px;padding:16px;cursor:pointer;transition:.3s;text-align:center}
+  .est:hover{transform:translateY(-4px);border-color:var(--naranja)}
+  .est.on{border-color:var(--verde);background:#eef8f3}
+  .est .ic{font-size:1.6rem}
+  .est b{display:block;margin-top:6px;font-size:.86rem}
+  .est small{color:var(--morado);font-weight:700;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em}
+  #simMsg{margin-top:16px;background:#fff;border-left:5px solid var(--morado);padding:14px 18px;border-radius:0 10px 10px 0;font-size:.85rem;min-height:48px}
+  /* ===== PROS/CONS y resultados ===== */
+  .result-strip{background:linear-gradient(90deg,var(--naranja),#c9861a);color:#fff;border-radius:var(--radio);padding:20px 24px;margin-bottom:24px;box-shadow:var(--sombra)}
+  .result-strip span{font-size:.66rem;letter-spacing:.18em;font-weight:800;opacity:.9}
+  .result-strip b{display:block;font-size:1.05rem;margin:6px 0}
+  .result-strip small{color:#fdf3df;line-height:1.55;display:block}
+  .ops{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.ops{grid-template-columns:1fr}}
+  .op{background:#fff;border:1.5px solid #efe8da;border-top:5px solid var(--morado);border-radius:var(--radio);padding:20px;box-shadow:var(--sombra);transition:.3s}
+  .op:hover{transform:translateY(-5px)}
+  .op .tag{font-size:.66rem;font-weight:800;color:var(--morado);letter-spacing:.14em}
+  .op h3{font-size:.95rem;font-weight:800;margin:6px 0}
+  .op p{font-size:.82rem;color:var(--tinta-suave);margin-top:8px}
+  .op p b{color:var(--tinta)}
+  /* ===== FLOW SÍNTESIS ===== */
+  .flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+  .flow .step{flex:1;min-width:160px;background:#fff;border:1.5px solid #efe8da;border-radius:12px;padding:18px;text-align:center;box-shadow:var(--sombra)}
+  .flow .step span{font-size:.68rem;font-weight:800;color:var(--naranja);letter-spacing:.14em}
+  .flow .step b{display:block;margin:6px 0 4px;font-size:.95rem}
+  .flow .step small{font-size:.76rem;color:var(--tinta-suave)}
+  .flow i{align-self:center;color:var(--gris);font-style:normal;font-weight:800}
+  /* ===== AUDIO ===== */
+  .audio-slot{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;background:#fff;border:1.5px dashed #d9cba8;border-radius:12px;margin:30px 0 0;box-shadow:var(--sombra);max-width:760px}
+  .audio-icon{font-size:22px}
+  .audio-main{flex:1}
+  .audio-main>b{display:block;font-size:.7rem;color:var(--morado);letter-spacing:.14em;margin-bottom:9px;text-transform:uppercase}
+  .slide-audio{width:100%;max-width:620px;height:40px}
+  .audio-help{text-align:center;color:#6a7e8f;font-size:.75rem;line-height:1.6;padding:24px 20px 0;max-width:760px;margin:0 auto}
+  @media(max-width:760px){.audio-slot{display:block}.audio-icon{display:block;margin-bottom:8px}}
+  textarea{width:100%;border:1.5px solid #e5ddcc;border-radius:10px;padding:12px;font:inherit;font-size:.85rem;background:#fff;margin-top:8px;resize:vertical}
+  /* ===== FOOTER ===== */
+  footer{margin-top:70px;background:var(--tinta);color:#cfc7ba;padding:50px 24px 34px;text-align:center}
+  footer .fm{font-size:.78rem;max-width:720px;margin:10px auto 0;line-height:1.8;text-align:left}
+  footer .fm b{color:#fff}
+  footer .legal-f{margin-top:22px;font-size:.62rem;letter-spacing:.22em;color:#8d8577}
+</style>
+</head>
+<body>
+
+<nav class="rail" id="rail">
+  <a href="#s1" title="¿Qué es el microcurrículo?"></a><a href="#s2" title="El documento analizado"></a>
+  <a href="#s3" title="Lentes de evaluación"></a><a href="#s4" title="Preguntas de control y quiz"></a>
+  <a href="#s5" title="Características del análisis"></a><a href="#s6" title="Fortalezas"></a>
+  <a href="#s7" title="Oportunidades de mejora"></a><a href="#s8" title="Diseñar una respuesta"></a>
+  <a href="#s9" title="Cierre"></a>
+</nav>
+<div class="legal">UNIVERSIDAD AUTÓNOMA DE BUCARAMANGA · MODELOS CURRICULARES Y PERSPECTIVAS EVALUATIVAS CONTEMPORÁNEAS · JHAN PAUL MARTÍNEZ</div>
+
+<header>
+  <div class="logo-unab">
+    <div class="marca">unab</div>
+    <div class="nombre">Universidad Autónoma de Bucaramanga · Maestría en Educación</div>
+  </div>
+  <div class="tagline">Modelos Curriculares y Perspectivas Evaluativas Contemporáneas<br>Jhan Paul Martínez</div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="aurora a1"></div><div class="aurora a2"></div>
+  <span class="kicker rv">Análisis crítico de un microcurrículo real · Matemáticas 1°</span>
+  <h1 class="rv d1">Analizar el microcurrículo.<br><em class="m">Descubrir oportunidades.</em></h1>
+  <p class="sub rv d2">Una exploración guiada para mirar más allá del documento y reconocer cómo se vive el aprendizaje en el aula. Analizamos el microcurrículo de <b>Matemáticas · Grado 1° · Unidad 1 · Sumas hasta el 20</b> del European School de Santa Marta, bajo el modelo de <b>evaluación iluminativa</b> de Parlett y Hamilton.</p>
+  <div class="tesis rv d3"><strong>¿Por qué el microcurrículo?</strong> Porque es el componente más cercano entre el docente y el alumno: allí el currículo deja de ser documento y se convierte en experiencia. El análisis evalúa si su estructura formativa es <strong>coherente, actualizada y efectiva</strong> para el aprendizaje de los estudiantes (Stufflebeam, 1987).</div>
+  <div class="heroimg rv d3"><img src="intro.jpg" alt="Analizar diseño y aula"></div>
+  <div class="rv d4" style="max-width:760px;width:100%">
+    <div class="audio-slot">
+      <span class="audio-icon">🎙</span>
+      <div class="audio-main">
+        <b>Audio del expositor · Presentación</b>
+        <audio class="slide-audio" src="audio_1.mp3" data-audio controls preload="auto" playsinline></audio>
+        <p style="font-size:.76rem;color:var(--tinta-suave);margin-top:8px">Me identifico e informo de la manipulación y autorreproducción de cada audio: cada pista pertenece a una sección de este recorrido y se detiene al pasar a la siguiente.</p>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint rv d4"><div class="mouse"></div>Desliza para descubrir</div>
+</div>
+
+<!-- ============ S1: QUÉ ES ============ -->
+<section id="s1">
+  <img class="bgimg" src="intro.jpg" alt="">
+  <div class="num rv"><span class="n">01</span></div>
+  <h2 class="rv">¿Qué es el microcurrículo?</h2>
+  <p class="lead rv d1">Es el nivel estructural más definido y concreto del diseño curricular. Cuando el currículo se trabaja por <em>núcleos problemáticos</em>, al microcurrículo le corresponden los <b>problemas específicos</b> que conforman un núcleo o subnúcleo, condensando los contenidos esenciales en componentes integradores con carácter indagador. Toca cada tarjeta para ver definición, referencia y ejemplo.</p>
+  <div class="cards">
+    <div class="flip rv d1" onclick="this.classList.toggle('open')">
+      <span class="plus">+</span><div class="ic">📐</div>
+      <h3>Definición · Hilda Taba</h3>
+      <p>El microcurrículo es el plan o guía de la actividad escolar: el nivel de concreción más específico y operativo del diseño curricular, desarrollado directamente en el aula por el docente.</p>
+      <span class="ref">Taba (1962), Curriculum Development</span>
+      <div class="det"><div class="resp"><b>Ejemplo:</b> el panel analizado en esta experiencia organiza cada componente del programa de Matemáticas de grado primero, desde la justificación hasta la evaluación.</div></div>
+    </div>
+    <div class="flip rv d2" onclick="this.classList.toggle('open')">
+      <span class="plus">+</span><div class="ic">🧩</div>
+      <h3>Núcleos problemáticos</h3>
+      <p>Los problemas específicos del microcurrículo surgen de condensar los contenidos esenciales en componentes integradores con carácter indagador, dentro de la estructura curricular intermedia.</p>
+      <span class="ref">De Zubiría (2006); MEN (1998, Lineamientos Curriculares)</span>
+      <div class="det"><div class="resp"><b>Ejemplo:</b> "sumas hasta el 20" se aborda como situación aditiva de composición y transformación, no como lista de ejercicios.</div></div>
+    </div>
+    <div class="flip rv d3" onclick="this.classList.toggle('open')">
+      <span class="plus">+</span><img class="tn" src="intro.jpg" alt="Diseño + aula">
+      <h3>Ejemplos del microcurrículo</h3>
+      <p>Programas de clase, plan de aula y actividades de docencia que generan ambientes para el aprendizaje: educatividad, enseñabilidad, educabilidad y aprendibilidad.</p>
+      <span class="ref">Flórez Ocampo (1999), La pedagogía como saber</span>
+      <div class="det"><div class="resp"><b>Imagen:</b> diseño + aula. En este sitio observamos dos evidencias del documento real: el plan de área y el panel del microcurrículo (sección 02).</div></div>
+    </div>
+  </div>
+  <div class="mapa-wrap rv d2" style="margin-top:26px">
+    <svg class="mapa-svg" viewBox="0 0 860 320" role="img" aria-label="Mapa conceptual: estructura del microcurrículo">
+      <defs><marker id="fl" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#929496"/></marker></defs>
+      <text x="430" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#8600dd">¿CÓMO SE ESTRUCTURA UN MICROCURRÍCULO?</text>
+      <g class="nodo"><rect x="300" y="45" width="260" height="46" rx="10" fill="#e9a427"/><text x="430" y="73" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">MICROCURRÍCULO (Taba, 1962)</text></g>
+      <line x1="380" y1="91" x2="180" y2="140" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="430" y1="91" x2="430" y2="140" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="480" y1="91" x2="690" y2="140" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <g class="nodo"><rect x="40" y="142" width="280" height="52" rx="10" fill="#fdf6e8" stroke="#e9a427" stroke-width="2"/><text x="180" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#b07712">INTENCIONES</text><text x="180" y="180" text-anchor="middle" font-size="9.5" fill="#8a6a33">justificación · propósito · competencias</text></g>
+      <g class="nodo"><rect x="290" y="142" width="280" height="52" rx="10" fill="#f7edff" stroke="#8600dd" stroke-width="2"/><text x="430" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#8600dd">SABERES Y SECUENCIA</text><text x="430" y="180" text-anchor="middle" font-size="9.5" fill="#6a4a86">saber · saber hacer · saber ser</text></g>
+      <g class="nodo"><rect x="540" y="142" width="280" height="52" rx="10" fill="#eef8f3" stroke="#008e6c" stroke-width="2"/><text x="680" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#008e6c">PRÁCTICA Y EVALUACIÓN</text><text x="680" y="180" text-anchor="middle" font-size="9.5" fill="#3d6e5c">metodología · actividades · evidencias</text></g>
+      <line x1="180" y1="194" x2="330" y2="245" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="430" y1="194" x2="430" y2="245" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="680" y1="194" x2="530" y2="245" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <g class="nodo"><rect x="215" y="247" width="430" height="56" rx="14" fill="#2b2b2b"/><text x="430" y="270" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="700">AMBIENTE DE APRENDIZAJE REAL EN EL AULA</text><text x="430" y="288" text-anchor="middle" fill="#e9a427" font-size="10">lo que este análisis observa: educatividad · enseñabilidad · educabilidad · aprendibilidad</text></g>
+    </svg>
+    <div class="mapa-leyenda">
+      <span class="chip"><i style="background:#e9a427"></i>Definición (Taba, 1962)</span>
+      <span class="chip"><i style="background:#8600dd"></i>Saberes</span>
+      <span class="chip"><i style="background:#008e6c"></i>Práctica</span>
+    </div>
+  </div>
+  <div class="lectura rv d3"><b>Idea clave:</b> analizar el microcurrículo es valorar críticamente si su estructura es <b>coherente, pertinente y efectiva</b> para el aprendizaje: no describir el documento, sino confrontarlo con lo que realmente ocurre en el aula.</div>
+  <div class="audio-slot rv d3">
+    <span class="audio-icon">🎧</span>
+    <div class="audio-main">
+      <b>Audio del expositor · Definiciones</b>
+      <audio class="slide-audio" src="audio_2.mp3" data-audio controls preload="auto" playsinline></audio>
+      <p style="font-size:.76rem;color:var(--tinta-suave);margin-top:8px">Observa las definiciones con sus referencias: cada tarjeta lleva definición, cita y ejemplo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S2: EL DOCUMENTO ============ -->
+<section id="s2">
+  <img class="bgimg" src="microcurriculo_panel.png" alt="">
+  <div class="num rv"><span class="n m">02</span></div>
+  <h2 class="rv">El microcurrículo analizado: Matemáticas 1° · Sumas hasta el 20</h2>
+  <p class="lead rv d1">Del documento a la práctica. Explora el formato del microcurrículo del <b>European School de Santa Marta</b> sección por sección: cada pestaña contiene la información específica del documento y cómo se leyó en el análisis. Las imágenes del material original también son evidencia.</p>
+  <div class="rv d2">
+    <div class="tabs">
+      <div class="tab act" onclick="tab(this,'t-id')">🪪 Identificación</div>
+      <div class="tab" onclick="tab(this,'t-jus')">💭 Justificación y propósito</div>
+      <div class="tab" onclick="tab(this,'t-ref')">📐 Referentes y saberes</div>
+      <div class="tab" onclick="tab(this,'t-met')">⚙️ Metodología y actividades</div>
+      <div class="tab" onclick="tab(this,'t-eval')">📊 Evaluación y evidencias</div>
+      <div class="tab" onclick="tab(this,'t-doc')">📄 El documento</div>
+    </div>
+    <div class="panel">
+      <div class="tabpane act" id="t-id">
+        <h4>Identificación</h4>
+        <div class="kv">
+          <div><b>Institución</b>European School de Santa Marta (educación multilingüe, modelo finlandés)</div>
+          <div><b>Área / Grado</b>Matemáticas · Grado Primero</div>
+          <div><b>Unidad / Tema</b>Unidad 1 · Sumas hasta el 20</div>
+          <div><b>Periodo / Duración</b>1° · 3 semanas</div>
+          <div><b>Intensidad semanal</b>4 horas (50 min c/u) · 2 jornadas</div>
+          <div><b>Trabajo en casa</b>30 min diarios con padres</div>
+          <div><b>Total horas presenciales</b>12 horas</div>
+          <div><b>Contexto</b>Aula, material concreto, recursos gráficos y digitales, situaciones cotidianas</div>
+        </div>
+        <h4 class="m">Lectura del análisis</h4>
+        <p>Las horas, el grado y el periodo resultan <b>realistas</b> para la cantidad de contenido propuesto: un solo eje (adición hasta 20) en 12 horas presenciales más trabajo diario en casa.</p>
+      </div>
+      <div class="tabpane" id="t-jus">
+        <h4>Justificación (del documento)</h4>
+        <p>"La comprensión inicial de la adición permite al estudiante interpretar y resolver situaciones cotidianas relacionadas con cantidades, agrupaciones y transformaciones… preparándolo para enfrentar retos académicos, sociales y de la vida real."</p>
+        <h4>Propósito de aprendizaje</h4>
+        <p>Comprender y utilizar la adición hasta el 20 para interpretar y resolver situaciones problemáticas sencillas de la vida cotidiana, utilizando material concreto, imágenes, representaciones gráficas y expresiones numéricas.</p>
+        <h4 class="m">Competencia</h4>
+        <p>Resuelve y formula situaciones aditivas sencillas utilizando diferentes representaciones, estrategias y recursos para comunicar sus procedimientos.</p>
+        <h4>Resultados de aprendizaje (6)</h4>
+        <ul>
+          <li>Representa cantidades hasta 20 mediante objetos, imágenes, dibujos y números.</li>
+          <li>Interpreta la suma como acción de juntar o agregar cantidades.</li>
+          <li>Construye y resuelve sumas hasta 20 mediante diferentes estrategias.</li>
+          <li>Selecciona representaciones o estrategias apropiadas.</li>
+          <li>Explica oralmente, gráficamente o con material concreto cómo resolvió una suma.</li>
+          <li>Aplica la suma en situaciones nuevas de su entorno.</li>
+        </ul>
+        <h4 class="m">Lectura del análisis</h4>
+        <p>Los resultados están redactados con <b>verbos en acción</b> (representar, interpretar, construir, seleccionar, explicar, aplicar) observables y graduados según la taxonomía de Bloom. Se articulan con los estándares y DBA del Ministerio de Educación.</p>
+      </div>
+      <div class="tabpane" id="t-ref">
+        <h4>Estándares Básicos de Competencias (MEN, 2003)</h4>
+        <ul>
+          <li>Resuelvo y formulo problemas en situaciones aditivas de composición y transformación.</li>
+          <li>Uso diferentes representaciones (dibujos, objetos, símbolos y números) para expresar cantidades y operaciones.</li>
+          <li>Reconozco el significado de la adición en situaciones de la vida cotidiana.</li>
+        </ul>
+        <h4>Derechos Básicos de Aprendizaje (DBA · MEN, 2016)</h4>
+        <ul>
+          <li>Comprende la adición como acción de juntar y agregar cantidades hasta 20.</li>
+          <li>Representa situaciones de suma mediante dibujos, material concreto y expresiones numéricas.</li>
+          <li>Resuelve problemas sencillos de adición en contextos cercanos a su vida diaria.</li>
+        </ul>
+        <h4 class="m">Saberes</h4>
+        <div class="kv" style="margin-top:8px">
+          <div><b>Saber (conceptual)</b>Cantidad y número hasta 20 · significado de la adición · juntar y agregar · totalidad · signos + e = · representaciones concretas, gráficas y simbólicas</div>
+          <div><b>Saber hacer (procedimental)</b>Contar colecciones · formar y juntar cantidades · agregar elementos · representar sumas · usar la recta numérica · resolver sumas hasta 20 · explicar estrategias</div>
+          <div><b>Saber ser (actitudinal)</b>Perseverancia · confianza para explicar · disposición a revisar · escucha y respeto por las estrategias de otros</div>
+          <div><b>Secuencia de progresión</b>1 Resumir → 2 Representar → 3 Estrategiar → 4 Resolver → 5 Explicar → 6 Discutir: de lo simple a lo complejo</div>
+        </div>
+        <h4 class="m">Lectura del análisis</h4>
+        <p>Los saberes están correctamente divididos en conceptual, procedimental y actitudinal, y avanzan de lo simple a lo complejo: condición que el análisis constructivista valora como progresión interna de esquemas.</p>
+      </div>
+      <div class="tabpane" id="t-met">
+        <h4>Ciclo de aprendizaje (6 fases)</h4>
+        <p><b>Explorar → Representar → Estrategiar → Resolver → Explicar → Transferir</b></p>
+        <h4>Estrategias</h4>
+        <ul>
+          <li>Situaciones cotidianas y juego.</li>
+          <li>Manipulación de material concreto.</li>
+          <li>Representaciones gráficas y simbólicas.</li>
+          <li>Resolución de problemas.</li>
+          <li>Trabajo colaborativo y conversación.</li>
+        </ul>
+        <h4 class="m">Roles</h4>
+        <div class="kv" style="margin-top:8px">
+          <div><b>Docente</b>Dirige, plantea, pregunta · observa, orienta, retroalimenta · registra avances y dificultades</div>
+          <div><b>Estudiante</b>Explora, manipula, representa · prueba, resuelve, explica · revisa sus procedimientos</div>
+        </div>
+        <h4>Actividades principales (7)</h4>
+        <ul>
+          <li>Explorar cantidades (manipula, cuenta y observa).</li>
+          <li>Construir sumas con material concreto (juntar/agregar).</li>
+          <li>Estrategias de conteo (prueba y elige la mejor).</li>
+          <li>Representar: objeto + número (dibuja, completa y escribe).</li>
+          <li>Resolver problemas de contexto real.</li>
+          <li>Explicar estrategias (comunica su procedimiento).</li>
+          <li>Transferir a una situación nueva (resuelve y justifica).</li>
+        </ul>
+        <h4 class="m">Lectura del análisis</h4>
+        <p>Predomina el <b>aprendizaje activo</b>: juego, manipulación, colaboración y resolución de problemas. No se limita a la cátedra tradicional; cada actividad tiene rol docente y rol estudiante explícitos.</p>
+      </div>
+      <div class="tabpane" id="t-eval">
+        <h4>Evaluación formativa</h4>
+        <p>Plataforma adaptativa <b>Matifis</b> (Matific): retroalimentación inmediata, no avanza de nivel hasta dominar el contenido, información sobre avances y dificultades.</p>
+        <h4>Evaluación sumativa (final de unidad)</h4>
+        <p>Situación integradora: comprender, representar, elegir estrategia, resolver y explicar.</p>
+        <h4 class="m">Criterios de evaluación (escala 1–10)</h4>
+        <div class="matriz" style="margin-top:8px"><table>
+          <tr><th>Criterio</th><th>Bajo 1–5.8</th><th>Básico 6–7.9</th><th>Sobresaliente 8–9.4</th><th>Superior 9.5–10</th></tr>
+          <tr><td>Representa cantidades</td><td colspan="4" style="text-align:center">Nivel alcanzado según desempeño en la evidencia correspondiente</td></tr>
+          <tr><td>Resuelve sumas · Utiliza estrategias · Explica procedimiento · Transfiere aprendizaje · Progreso en Matifis</td><td colspan="4" style="text-align:center">Misma escala de dominio progresivo por criterio</td></tr>
+        </table></div>
+        <h4>Evidencias de aprendizaje</h4>
+        <p>Producciones gráficas y escritas · representaciones con material concreto · resolución de problemas · explicaciones orales o gráficas · estrategias utilizadas · ejercicios de transferencia · registro de observación durante la clase · actividad de consolidación extraclase. Tipos: de proceso, de producto y de desempeño.</p>
+        <h4>Condiciones de implementación</h4>
+        <p>Espacio: aula de primero · Participantes: docente y estudiantes · Interacciones: docente–estudiante, estudiante–estudiante, estudiante–material · Clima: seguro, propositivo y colaborativo.</p>
+        <h4 class="m">Lectura del análisis</h4>
+        <p>La evaluación es <b>formativa y sumativa</b>, con criterios e instrumentos claros (rúbrica por escala, plataforma adaptativa, observación) más allá de un examen escrito final.</p>
+      </div>
+      <div class="tabpane" id="t-doc">
+        <h4>Plan de área · Formato F-GA-01 (versión 01, 18-01-2017)</h4>
+        <p>Grado Primero · Unidad Uno · "Sumas y restas hasta el 20": periodos, estándares, DBA, contenidos (sumas hasta el 10 con imágenes; restas tachando elementos; problemas matemáticos con imágenes) y desempeños.</p>
+        <img class="imgdoc" src="microcurriculo_plan.png" alt="Formato plan de área de primero: sumas y restas hasta el 20">
+        <a class="doclink" href="microcurriculo_plan.png" target="_blank" rel="noopener">Abrir el plan de área en tamaño completo ↗</a>
+        <h4 class="m">Panel del microcurrículo</h4>
+        <p>Organiza identificación, justificación, propósito, competencias, resultados, saberes, secuencia, metodología, actividades y evaluación.</p>
+        <img class="imgdoc" src="microcurriculo_panel.png" alt="Panel del microcurrículo de Matemáticas grado primero">
+        <a class="doclink" href="microcurriculo_panel.png" target="_blank" rel="noopener">Abrir el panel del microcurrículo en tamaño completo ↗</a>
+        <h4 class="m">Tu mirada</h4>
+        <p>¿Qué información de la planeación ayuda a comprobar que existe conexión entre lo esperado y lo que el estudiante hará? Escribe una observación breve (opcional):</p>
+        <textarea placeholder="Tu observación sobre la coherencia entre plan y panel..."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="audio-slot rv d3">
+    <span class="audio-icon">🎧</span>
+    <div class="audio-main">
+      <b>Audio del expositor · Del documento a la práctica</b>
+      <audio class="slide-audio" src="audio_3.mp3" data-audio controls preload="auto" playsinline></audio>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S3: LENTES ============ -->
+<section id="s3">
+  <div class="num rv"><span class="n">03</span></div>
+  <h2 class="rv">Dos lentes para analizar</h2>
+  <p class="lead rv d1">Para fundamentar el análisis se combinan dos miradas: la <b>evaluación iluminativa</b> (Parlett y Hamilton) como modelo principal, y el <b>constructivismo</b> como marco del diseño didáctico. Se complementa con los subtipos de evaluación de Stufflebeam (1987). Selecciona cada lente y recorre el mapa de lo general a lo particular.</p>
+  <div class="rv d2">
+    <div class="tabs">
+      <div class="tab act" onclick="tab(this,'l-illum')">💡 Evaluación iluminativa</div>
+      <div class="tab" onclick="tab(this,'l-const')">🧠 Constructivismo</div>
+      <div class="tab" onclick="tab(this,'l-stuf')">🎯 Stufflebeam (CIPP)</div>
+    </div>
+    <div class="panel">
+      <div class="tabpane act" id="l-illum">
+        <h4>Modelo de Evaluación Iluminativa (Parlett y Hamilton, 1972)</h4>
+        <p>Tiene un enfoque <b>cualitativo y humanista</b>. No se fija tanto en las calificaciones, sino en <b>cómo viven la asignatura los profesores y los estudiantes</b>. Utiliza la observación y las entrevistas para descubrir los problemas ocultos del microcurrículo: por ejemplo, si la carga de tareas es excesiva o si los temas generan frustración. Analiza el programa como un <b>sistema abierto en su contexto real de ejecución</b>.</p>
+        <h4 class="m">Elementos que evalúa (general → particular)</h4>
+        <div class="kv" style="margin-top:8px">
+          <div><b>Sistema de instrucción</b>Componentes operativos: materiales, espacios, horarios, la plataforma Matifis</div>
+          <div><b>Ambiente de aprendizaje</b>El ecosistema social y físico del aula de primero: interacciones, clima seguro y colaborativo</div>
+          <div><b>Base de instalación</b>La institución: European School, recursos, familias, modelo finlandés multilingüe</div>
+        </div>
+        <h4 class="m">Pregunta de reflexión</h4>
+        <p>¿Qué información se perdería si solo revisáramos resultados finales y no observáramos cómo se desarrolla la experiencia? Se perdería la vivencia: frustraciones, ritmos, la forma en que niños de 6 años interpretan la propuesta.</p>
+      </div>
+      <div class="tabpane" id="l-const">
+        <h4>Modelos vinculados al constructivismo</h4>
+        <p>Los modelos de evaluación de microcurrículo vinculados al constructivismo se caracterizan por validar el diseño de una enseñanza que prioriza el <b>aprendizaje activo, la autonomía del estudiante y la progresión interna de sus esquemas mentales</b> (Piaget; Vygotsky; Ausubel, 1968). Evaluar un microcurrículo no implica medir si los contenidos están listos para memorizar, sino verificar si la estructura didáctica propicia la <b>construcción de significados funcionales</b>.</p>
+        <h4 class="m">Qué aporta al análisis</h4>
+        <p>El documento parte del modelo constructivista e integra lo teórico con lo práctico: manipulación de material concreto antes del símbolo, secuencia explorar→transferir, trabajo colaborativo y conversación como zona de desarrollo próximo (Vygotsky, 1978).</p>
+      </div>
+      <div class="tabpane" id="l-stuf">
+        <h4>Stufflebeam (1987) · Evaluación CIPP</h4>
+        <p>El proceso de evaluación de un currículo va desde su creación y diseño hasta la aplicación del proyecto en el que se encuentran, con subtipos de evaluación: <b>de contexto, de insumos, de procesos y del producto</b>, lo cual conlleva a tomar cuatro tipos de decisiones: de planificación, estructurales, de implantación y de retrocomunicación.</p>
+        <h4 class="m">Aplicado a este análisis</h4>
+        <div class="kv" style="margin-top:8px">
+          <div><b>Contexto</b>Aula de primero, necesidades del grupo, PEI del European School</div>
+          <div><b>Insumos</b>12 horas presenciales, material concreto, plataforma Matifis, docente</div>
+          <div><b>Proceso</b>Ciclo de aprendizaje en 6 fases, roles docente/estudiante</div>
+          <div><b>Producto</b>Criterios por escala 1–10, evidencias, situación integradora final</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mapa-wrap rv d3" style="margin-top:22px">
+    <svg class="mapa-svg" viewBox="0 0 860 300" role="img" aria-label="Mapa conceptual: evaluación iluminativa aplicada al plan de clase">
+      <text x="430" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#8600dd">EVALUACIÓN ILUMINATIVA (Parlett y Hamilton) SOBRE EL PLAN DE CLASE</text>
+      <g class="nodo"><rect x="300" y="42" width="260" height="44" rx="10" fill="#8600dd"/><text x="430" y="69" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">PROGRAMA COMO SISTEMA ABIERTO</text></g>
+      <line x1="430" y1="86" x2="180" y2="130" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="430" y1="86" x2="430" y2="130" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="430" y1="86" x2="680" y2="130" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <g class="nodo"><rect x="40" y="132" width="280" height="50" rx="10" fill="#fdf6e8" stroke="#e9a427" stroke-width="2"/><text x="180" y="152" text-anchor="middle" font-size="10.5" font-weight="700" fill="#b07712">SISTEMA DE INSTRUCCIÓN</text><text x="180" y="168" text-anchor="middle" font-size="9.5" fill="#8a6a33">Matifis · material concreto · horarios</text></g>
+      <g class="nodo"><rect x="290" y="132" width="280" height="50" rx="10" fill="#f7edff" stroke="#8600dd" stroke-width="2"/><text x="430" y="152" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8600dd">AMBIENTE DE APRENDIZAJE</text><text x="430" y="168" text-anchor="middle" font-size="9.5" fill="#6a4a86">aula segura, colaborativa, 6 años</text></g>
+      <g class="nodo"><rect x="540" y="132" width="280" height="50" rx="10" fill="#eef8f3" stroke="#008e6c" stroke-width="2"/><text x="680" y="152" text-anchor="middle" font-size="10.5" font-weight="700" fill="#008e6c">BASE DE INSTALACIÓN</text><text x="680" y="168" text-anchor="middle" font-size="9.5" fill="#3d6e5c">European School · familias · PEI</text></g>
+      <line x1="180" y1="182" x2="330" y2="228" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="430" y1="182" x2="430" y2="228" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <line x1="680" y1="182" x2="530" y2="228" stroke="#c9bda5" stroke-width="2" marker-end="url(#fl)"/>
+      <g class="nodo"><rect x="200" y="230" width="460" height="54" rx="14" fill="#2b2b2b"/><text x="430" y="252" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">OBSERVACIÓN PARTICIPANTE + ENTREVISTAS</text><text x="430" y="270" text-anchor="middle" fill="#e9a427" font-size="10">técnicas de verificación: lo oculto (carga de tareas, frustración) sale a la luz</text></g>
+    </svg>
+  </div>
+  <div class="lectura rv d3"><b>Del general a lo particular:</b> primero el modelo (evaluar cómo se vive el programa en contexto), luego sus tres componentes del sistema, y finalmente las técnicas que verifican cada componente en el aula de primero.</div>
+  <div class="audio-slot rv d4">
+    <span class="audio-icon">🎙</span>
+    <div class="audio-main">
+      <b>Audio del expositor · Modelo de evaluación</b>
+      <audio class="slide-audio" src="audio_4.mp3" data-audio controls preload="auto" playsinline></audio>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S4: PREGUNTAS DE CONTROL + QUIZ ============ -->
+<section id="s4">
+  <div class="num rv"><span class="n m">04</span></div>
+  <h2 class="rv">Preguntas de control: el análisis, dimensión por dimensión</h2>
+  <p class="lead rv d1">Seis preguntas gobiernan la revisión. Abre cada dimensión y encuentra, además de la pregunta, la <b>respuesta específica del análisis</b> para este microcurrículo. No se trata de marcar casillas mecánicamente, sino de buscar coherencia entre las partes.</p>
+  <div class="acc rv d1">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🪪</span><span class="tt"><b>Información general</b><small>¿Las horas, el grado y el periodo son realistas frente a la cantidad de contenidos?</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>12 horas presenciales + 30 min diarios en casa, 3 semanas, un solo eje conceptual (adición hasta 20).</p>
+      <div class="verdicto"><div class="v ok"><b>Veredicto</b>Realista y bien dosificado: la carga presencial es coherente con la edad del grupo.</div><div class="v warn"><b>Atención</b>El trabajo diario en casa con padres exige verificar que las familias realmente puedan acompañar.</div></div>
+    </div></div>
+  </div>
+  <div class="acc rv d1">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">💭</span><span class="tt"><b>Justificación</b><small>¿Explica la importancia del aprendizaje en el contexto social, personal y laboral del estudiante?</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>La justificación conecta la adición con situaciones cotidianas de cantidades, agrupaciones y transformaciones, y con "retos académicos, sociales y de la vida real".</p>
+      <div class="verdicto"><div class="v ok"><b>Veredicto</b>Clara y contextualizada: explica el para qué en la vida del niño, no solo el qué.</div></div>
+    </div></div>
+  </div>
+  <div class="acc rv d2">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🎯</span><span class="tt"><b>Competencias y objetivos</b><small>¿Describen acciones observables y se articulan con los referentes oficiales?</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>Seis resultados con verbos en acción (representar, interpretar, construir, seleccionar, explicar, aplicar), articulados con Estándares (MEN, 2003) y DBA (MEN, 2016) sobre situaciones aditivas hasta 20.</p>
+      <div class="verdicto"><div class="v ok"><b>Veredicto</b>Alineados con Bloom y con los lineamientos del Ministerio de Educación.</div></div>
+    </div></div>
+  </div>
+  <div class="acc rv d2">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🧩</span><span class="tt"><b>Contenidos y saberes</b><small>¿Avanzan de lo simple a lo complejo e integran saber, saber hacer y saber ser?</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>Secuencia Resumir→Representar→Estrategiar→Resolver→Explicar→Discutir, con saberes conceptuales (número hasta 20, juntar/agregar), procedimentales (contar, recta numérica, estrategias) y actitudinales (perseverancia, respeto por estrategias de otros).</p>
+      <div class="verdicto"><div class="v ok"><b>Veredicto</b>Progresión interna clara: de lo concreto a lo simbólico, típica del constructivismo.</div></div>
+    </div></div>
+  </div>
+  <div class="acc rv d3">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">⚙️</span><span class="tt"><b>Metodología</b><small>¿Promueve aprendizaje activo o se limita a la cátedra tradicional?</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>Ciclo de 6 fases, juego, material concreto, resolución de problemas, trabajo colaborativo, roles explícitos docente/estudiante y tecnología interactiva (tableros inteligentes, Matifis).</p>
+      <div class="verdicto"><div class="v ok"><b>Veredicto</b>Aprendizaje activo predominante: proyectos, retos, diálogo y resolución de problemas.</div></div>
+    </div></div>
+  </div>
+  <div class="acc rv d3">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">📊</span><span class="tt"><b>Evaluación</b><small>¿Hay criterios e instrumentos claros, formativos y sumativos, más allá de una prueba final?</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>Formativa continua en Matifis con retroalimentación inmediata; sumativa con situación integradora; rúbrica por criterios en escala 1–10 (bajo, básico, sobresaliente, superior) y ocho tipos de evidencia (proceso, producto, desempeño).</p>
+      <div class="verdicto"><div class="v ok"><b>Veredicto</b>Instrumentos claros y variados: plataforma adaptativa, observación y producción del estudiante.</div><div class="v warn"><b>Atención</b>La escala 1–10 con corte en 6 podría ajustarse a la escala valorativa nacional (Bajo, Básico, Alto, Superior).</div></div>
+    </div></div>
+  </div>
+  <div class="quiz rv d3">
+    <h3>📝 Reto rápido: comprueba tu lectura</h3>
+    <p style="font-size:.85rem;color:var(--tinta-suave)">Tres preguntas. Solo una opción es correcta en cada una; la retroalimentación distingue aciertos y errores.</p>
+    <div class="qq" data-q="1">
+      <p>1. ¿Qué modelo orienta este análisis del microcurrículo?</p>
+      <label><input type="radio" name="q1" value="a"> Evaluación por objetivos de Tyler, centrada solo en calificaciones finales</label>
+      <label><input type="radio" name="q1" value="b"> Evaluación iluminativa de Parlett y Hamilton: cómo viven el programa docentes y estudiantes en su contexto real</label>
+      <label><input type="radio" name="q1" value="c"> Auditoría administrativa de recursos del colegio</label>
+    </div>
+    <div class="qq" data-q="2">
+      <p>2. En la secuencia de progresión, ¿qué ocurre antes de "Resolver"?</p>
+      <label><input type="radio" name="q2" value="a"> Estrategiar: probar diferentes estrategias para sumar</label>
+      <label><input type="radio" name="q2" value="b"> Explicar su procedimiento</label>
+      <label><input type="radio" name="q2" value="c"> Discutir y transferir a situaciones nuevas</label>
+    </div>
+    <div class="qq" data-q="3">
+      <p>3. Según el análisis, ¿qué aporta la plataforma Matifis a la evaluación?</p>
+      <label><input type="radio" name="q3" value="a"> Sustituye al docente en la calificación final</label>
+      <label><input type="radio" name="q3" value="b"> Retroalimentación inmediata formativa: no avanza de nivel hasta dominar el contenido</label>
+      <label><input type="radio" name="q3" value="c"> Solo sirve como registro de asistencia</label>
+    </div>
+    <p id="quizResult" aria-live="polite"></p>
+    <button class="btn-unab" onclick="gradeQuiz()">Verificar respuestas</button>
+  </div>
+</section>
+
+<!-- ============ S5: CARACTERÍSTICAS ============ -->
+<section id="s5">
+  <img class="bgimg" src="intro.jpg" alt="">
+  <div class="num rv"><span class="n">05</span></div>
+  <h2 class="rv">Características del microcurrículo identificadas</h2>
+  <p class="lead rv d1">Siete características describen la propuesta analizada. Cada una se observa en el material y se sustenta con autores de referencia. <b>Enfoque pedagógico del documento: constructivista</b> (Piaget; Vygotsky, 1978; Ausubel, 1968), con integración de tecnología y juego.</p>
+  <div class="acc rv d1">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🧵</span><span class="tt"><b>1 · Coherencia interna</b><small>El hilo conductor entre objetivos, actividades y evaluación</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>El objetivo es resolver situaciones aditivas hasta 20; las actividades son de juntar, representar y resolver sumas; y la evaluación mide exactamente eso: representa cantidades, resuelve sumas, explica procedimiento.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> la coherencia curriculum-alignment se verifica en Tyler (1949): objetivos, experiencias de aprendizaje y evaluación deben corresponder.</p>
+      <div class="tabla-an" style="margin-top:10px">
+        <div class="matriz"><table>
+          <tr><th>Componente</th><th>Evidencia en el documento</th></tr>
+          <tr><td>Objetivo</td><td>Resolver situaciones aditivas sencillas hasta 20</td></tr>
+          <tr><td>Actividad</td><td>Construir sumas con material concreto; resolver problemas de contexto</td></tr>
+          <tr><td>Evaluación</td><td>Criterio "Resuelve sumas" y situación integradora final</td></tr>
+        </table></div>
+        <img src="microcurriculo_panel.png" alt="Panel del microcurrículo">
+      </div>
+    </div></div>
+  </div>
+  <div class="acc rv d1">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">📍</span><span class="tt"><b>2 · Pertinencia contextual</b><small>Necesidades del grado, recursos y PEI</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>Responde a las necesidades de niños de 6 años: material concreto, juego, 50 minutos por sesión. Utiliza los recursos disponibles del colegio (tableros, bloques, fichas, plataforma) y se articula con el modelo institucional del European School: educación multilingüe, modelo finlandés, formación internacional.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> Stufflebeam (1987): la evaluación de contexto define si los objetivos responden a las necesidades reales de los destinatarios.</p>
+    </div></div>
+  </div>
+  <div class="acc rv d2">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🤝</span><span class="tt"><b>3 · Flexibilidad e inclusión</b><small>Ritmos diversos y adaptaciones curriculares</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>El ciclo en 6 fases permite ritmos diferentes y la plataforma adaptativa no avanza hasta dominar el contenido. Se recomienda que el documento contemple adaptaciones curriculares (PIAR) para estudiantes con NEE.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> Booth y Ainscow (2011), Index for Inclusion; Decreto 1421 de 2017 (Colombia): PIAR para estudiantes con discapacidad.</p>
+    </div></div>
+  </div>
+  <div class="acc rv d2">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🙋</span><span class="tt"><b>4 · Participación</b><small>El estudiante interviene activamente</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>El estudiante explora, manipula, representa, prueba, resuelve, explica y revisa: el docente dirige, pero el protagonismo es del niño en cada fase del ciclo.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> learning by doing de Dewey (1938); participación como dimensión de inclusión (Booth y Ainscow, 2011).</p>
+    </div></div>
+  </div>
+  <div class="acc rv d3">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🔁</span><span class="tt"><b>5 · Relación teoría-práctica</b><small>Integra lo teórico con lo práctico</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>Parte del modelo constructivista: del material concreto (bloques, fichas) a la representación gráfica y al símbolo (+, =, expresión numérica), integrando la comprensión conceptual con experiencias de aplicación en situaciones cotidianas.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> Bruner (1966): representación enactiva → icónica → simbólica; Vygotsky (1978): construcción social del conocimiento.</p>
+    </div></div>
+  </div>
+  <div class="acc rv d3">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🌐</span><span class="tt"><b>6 · Integración</b><small>Interdisciplinariedad y proyectos</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>El estudiante aborda situaciones desde ángulos interdisciplinarios sin desintegrar el conocimiento: la unidad cruza matemáticas con lengua (explicar procedimientos), inglés (se dicta en ese idioma) y tecnología (Matifis, tableros interactivos), con evidencia de aprendizaje basado en proyectos y retos.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> Beane (1997), Curriculum integration: el conocimiento se organiza alrededor de problemas reales, no de asignaturas aisladas.</p>
+    </div></div>
+  </div>
+  <div class="acc rv d4">
+    <li class="acc-h" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🧭</span><span class="tt"><b>7 · Autodesarrollo</b><small>Autoevaluación y acción correctiva</small></span><span class="chev">▾</span></li>
+    <div class="acc-b"><div class="inner">
+      <p>El por qué, el cómo y el para qué exigen autoevaluación y acción correctiva: el niño revisa sus procedimientos, escucha otras estrategias y la plataforma le exige dominio antes de avanzar. Es efecto del enfoque cognitivo del aprendizaje: parte de vivencias y preconceptos, y permite la construcción mental del conocimiento, relacionándose con participación y autodirección.</p>
+      <p style="margin-top:8px"><b>Referencia:</b> Ausubel (1968), aprendizaje significativo; Flavell (1979), metacognición.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ S6: FORTALEZAS ============ -->
+<section id="s6">
+  <div class="num rv"><span class="n m">06</span></div>
+  <h2 class="rv">Fortalezas identificadas</h2>
+  <p class="lead rv d1">Estas cuatro fortalezas aparecen explícitamente en el material analizado. Explóralas para distinguir <b>qué se observa</b> y <b>qué valor pedagógico se reconoce</b>.</p>
+  <div class="result-strip rv d1"><span>RESULTADO 01</span><b>La propuesta ya incorpora recursos y estrategias activas.</b><small>La mejora no parte de cero: parte de elementos existentes que conviene conservar, articular y potenciar.</small></div>
+  <div class="cards">
+    <div class="flip rv d1" onclick="this.classList.toggle('open')"><span class="plus">+</span><div class="ic">🖥️</div><h3>01 · Tableros inteligentes</h3><p>Inclusión de enfoque tecnológico con tableros inteligentes interactivos.</p><div class="det"><div class="resp"><b>Aporte señalado:</b> mayor interacción con el contenido y desarrollo de una ejercitación más numerosa y motivante.</div></div></div>
+    <div class="flip rv d2" onclick="this.classList.toggle('open')"><span class="plus">+</span><div class="ic">🌍</div><h3>02 · Se dicta en inglés</h3><p>La experiencia se desarrolla en inglés: promueve la interculturalidad.</p><div class="det"><div class="resp"><b>Aporte señalado:</b> amplía la experiencia lingüística del estudiante en un entorno multilingüe (modelo finlandés del European School).</div></div></div>
+    <div class="flip rv d3" onclick="this.classList.toggle('open')"><span class="plus">+</span><div class="ic">✂️</div><h3>03 · Manualidades y materiales</h3><p>Enfoque en desarrollo de manualidades: el colegio brinda toda la disponibilidad de materiales.</p><div class="det"><div class="resp"><b>Aporte señalado:</b> el desarrollo de actividades motoras activa un escenario para practicar lo aprendido con las manos, no solo con lápiz.</div></div></div>
+  </div>
+  <div class="cards" style="margin-top:18px">
+    <div class="flip rv d1" onclick="this.classList.toggle('open')"><span class="plus">+</span><div class="ic">🏆</div><h3>04 · Enfoque basado en retos</h3><p>Retos que estimulan el desarrollo de actividades a partir del conocimiento brindado.</p><div class="det"><div class="resp"><b>Aporte señalado:</b> invita a movilizar conocimientos para responder a desafíos, en lugar de limitarse a recibir información pasivamente.</div></div></div>
+  </div>
+  <div class="lectura rv d3"><b>Lectura del resultado:</b> el análisis no plantea eliminar estas prácticas. Las reconoce como activos de la propuesta sobre los cuales pueden construirse las mejoras.</div>
+  <div class="audio-slot rv d3">
+    <span class="audio-icon">🎙</span>
+    <div class="audio-main"><b>Audio del expositor · Resultados: fortalezas</b>
+    <audio class="slide-audio" src="audio_5.mp3" data-audio controls preload="auto" playsinline></audio></div>
+  </div>
+</section>
+
+<!-- ============ S7: OPORTUNIDADES ============ -->
+<section id="s7">
+  <img class="bgimg" src="microcurriculo_plan.png" alt="">
+  <div class="num rv"><span class="n">07</span></div>
+  <h2 class="rv">Oportunidades de mejora identificadas</h2>
+  <p class="lead rv d1">El material señala tres oportunidades concretas. No son problemas inventados para la actividad: son líneas de mejora derivadas del análisis presentado. Cada tarjeta incluye la tabla de análisis con su imagen asociada.</p>
+  <div class="ops">
+    <div class="op rv d1"><span class="tag">01 · DESARROLLO MOTOR</span><h3>Ampliar escenarios físicos</h3>
+      <p><b>Hallazgo:</b> se propone incorporar más escenarios físicos vinculados al aprendizaje de los números hasta el 20.</p>
+      <p><b>Propósito:</b> fortalecer la relación entre aprendizaje matemático y desarrollo motor mediante experiencias corporales y espaciales.</p>
+      <div class="matriz" style="margin-top:12px"><table>
+        <tr><th>Dato</th><th>Detalle</th></tr>
+        <tr><td>Evidencia actual</td><td>Manualidades y material concreto en aula</td></tr>
+        <tr><td>Línea de mejora</td><td>Recorridos, estaciones y juegos corporales de conteo</td></tr>
+        <tr><td>Validar con</td><td>Tiempo, materiales, seguridad, inclusión</td></tr>
+      </table></div>
+      <img src="intro.jpg" alt="Escenarios físicos de aprendizaje" style="width:100%;border-radius:10px;border:1.5px solid #efe8da;margin-top:12px;object-fit:cover;height:110px">
+    </div>
+    <div class="op rv d2"><span class="tag">02 · COMUNIDAD</span><h3>Involucrar a las familias</h3>
+      <p><b>Hallazgo:</b> se plantea mayor participación de padres y familias en la comunidad educativa.</p>
+      <p><b>Propósito:</b> apoyar la integración y consolidación de los aprendizajes; a esa edad es importante que los referentes de los niños los acompañen en las etapas del proceso.</p>
+      <div class="matriz" style="margin-top:12px"><table>
+        <tr><th>Dato</th><th>Detalle</th></tr>
+        <tr><td>Evidencia actual</td><td>30 min diarios de trabajo en casa con padres</td></tr>
+        <tr><td>Línea de mejora</td><td>Comunidad activa: talleres y retos familiares</td></tr>
+        <tr><td>Validar con</td><td>Claridad de instrucciones y participación voluntaria</td></tr>
+      </table></div>
+      <img src="microcurriculo_plan.png" alt="Trabajo en casa" style="width:100%;border-radius:10px;border:1.5px solid #efe8da;margin-top:12px;object-fit:cover;height:110px">
+    </div>
+    <div class="op rv d3"><span class="tag">03 · VISIBILIDAD</span><h3>Crear espacios para mostrar lo creado</h3>
+      <p><b>Hallazgo:</b> se sugieren espacios profesionales o de muestra para reconocer el valor de lo construido.</p>
+      <p><b>Propósito:</b> aumentar la visibilidad e impacto de los proyectos mediante emprendimiento, redes sociales y grupos de marketing escolares o familiares.</p>
+      <div class="matriz" style="margin-top:12px"><table>
+        <tr><th>Dato</th><th>Detalle</th></tr>
+        <tr><td>Evidencia actual</td><td>Producciones gráficas y escritas como evidencia</td></tr>
+        <tr><td>Línea de mejora</td><td>Muestras de proyectos con propósito</td></tr>
+        <tr><td>Validar con</td><td>Privacidad, accesibilidad y retroalimentación</td></tr>
+      </table></div>
+      <img src="microcurriculo_panel.png" alt="Producciones del estudiante" style="width:100%;border-radius:10px;border:1.5px solid #efe8da;margin-top:12px;object-fit:cover;height:110px">
+    </div>
+  </div>
+  <div class="lectura rv d3"><b>Lectura del resultado:</b> las tres oportunidades apuntan a ampliar el aprendizaje más allá de la actividad de aula: cuerpo y espacio, comunidad y visibilidad de lo producido.</div>
+  <div class="rv d4" style="margin-top:18px">
+    <p style="font-weight:700;font-size:.9rem">Ahora participa tú: ¿cuál priorizarías y por qué?</p>
+    <textarea id="why" placeholder="Justifica tu prioridad usando uno o más hallazgos del análisis..."></textarea>
+    <button class="btn-unab" onclick="var v=document.getElementById('why').value;document.getElementById('priorityResult').textContent=v?'Tu decisión quedó registrada: «'+v.slice(0,140)+'». Compárela con la lectura del resultado de arriba.':'Escribe primero tu justificación para registrar la decisión.'">Ver mi decisión</button>
+    <p id="priorityResult" aria-live="polite" style="font-size:.85rem;margin-top:10px"></p>
+  </div>
+  <div class="audio-slot rv d4">
+    <span class="audio-icon">🎙</span>
+    <div class="audio-main"><b>Audio del expositor · Resultados: oportunidades de mejora</b>
+    <audio class="slide-audio" src="audio_6.mp3" data-audio controls preload="auto" playsinline></audio></div>
+  </div>
+</section>
+
+<!-- ============ S8: RESPUESTA + SIMULACIÓN ============ -->
+<section id="s8">
+  <div class="num rv"><span class="n m">08</span></div>
+  <h2 class="rv">Del hallazgo a una posible respuesta</h2>
+  <p class="lead rv d1">Aquí comienza una fase diferente: las oportunidades anteriores son resultados del análisis; las estrategias de esta pantalla son <b>propuestas de exploración</b> que deberían validarse en contexto. Elige la oportunidad y observa la simulación de la solución sugerida.</p>
+  <div class="rv d2">
+    <div class="tabs">
+      <div class="tab act" onclick="tab(this,'e1')">🤸 Práctica motora</div>
+      <div class="tab" onclick="tab(this,'e2')">👨‍👩‍👧 Familias</div>
+      <div class="tab" onclick="tab(this,'e3')">📣 Muestras</div>
+    </div>
+    <div class="panel">
+      <div class="tabpane act" id="e1"><h4>POSIBLE LÍNEA DE ACCIÓN</h4><p style="font-weight:700;font-size:1rem;color:var(--morado)">Estaciones matemáticas activas</p><p>Diseñar estaciones cortas con objetos, tarjetas numéricas, recorridos y retos de conteo; observar qué apoyos facilitan la participación.</p><p style="font-size:.8rem;color:var(--gris);margin-top:8px">Para validar: tiempo disponible, materiales, seguridad, inclusión y evidencia de aprendizaje.</p></div>
+      <div class="tabpane" id="e2"><h4>POSIBLE LÍNEA DE ACCIÓN</h4><p style="font-weight:700;font-size:1rem;color:var(--morado)">Retos familiares de sumas</p><p>Proponer una situación corta de suma para resolver en casa y compartir cómo se resolvió, evitando trasladar la responsabilidad de enseñanza exclusivamente a las familias.</p><p style="font-size:.8rem;color:var(--gris);margin-top:8px">Para validar: claridad de instrucciones, acceso a materiales y participación voluntaria.</p></div>
+      <div class="tabpane" id="e3"><h4>POSIBLE LÍNEA DE ACCIÓN</h4><p style="font-weight:700;font-size:1rem;color:var(--morado)">Muestra de proyectos con propósito</p><p>Organizar una instancia breve en la que los estudiantes expliquen qué crearon, qué aprendieron y cómo su trabajo puede servir a otros.</p><p style="font-size:.8rem;color:var(--gris);margin-top:8px">Para validar: protagonismo infantil, privacidad, accesibilidad y criterios claros de retroalimentación.</p></div>
+    </div>
+  </div>
+  <div class="sim rv d3">
+    <h3>🧪 Simulación: ¿cómo se vería la solución sugerida?</h3>
+    <p style="font-size:.85rem;color:var(--tinta-suave)">Toca las estaciones de la clase simulada para ver qué hace el estudiante y qué evidencia recogería el docente.</p>
+    <div class="estaciones">
+      <div class="est" onclick="simStep(1,this)"><span class="ic">🧮</span><small>Estación 1</small><b>Conteo con objetos</b></div>
+      <div class="est" onclick="simStep(2,this)"><span class="ic">👣</span><small>Estación 2</small><b>Recorrido numérico</b></div>
+      <div class="est" onclick="simStep(3,this)"><span class="ic">🃏</span><small>Estación 3</small><b>Retos de tarjetas</b></div>
+    </div>
+    <div id="simMsg">La clase simulada tiene 3 estaciones de 8 minutos. Toca cada una para recorrer la solución…</div>
+  </div>
+  <div class="lectura rv d4"><b>Hazlo concreto:</b> ¿qué evidencia te permitiría saber si la estrategia está ayudando? <span style="font-size:.8rem">Observación de desempeño · producción del estudiante · voz de las familias: las tres se recogen en la simulación.</span></div>
+  <div class="audio-slot rv d4">
+    <span class="audio-icon">🎙</span>
+    <div class="audio-main"><b>Audio del expositor · Diapositiva 09</b>
+    <audio class="slide-audio" src="audio_7.mp3" data-audio controls preload="auto" playsinline></audio></div>
+  </div>
+</section>
+
+<!-- ============ S9: CIERRE ============ -->
+<section id="s9">
+  <div class="num rv"><span class="n">09</span></div>
+  <h2 class="rv">Una mirada que conduce a decisiones</h2>
+  <p class="lead rv d1">El análisis no termina al describir el microcurrículo: comienza a aportar cuando conecta la evidencia con decisiones justificadas.</p>
+  <div class="flow rv d2">
+    <div class="step"><span>01</span><b>Observar</b><small>Documento, imágenes y práctica</small></div><i>→</i>
+    <div class="step"><span>02</span><b>Interpretar</b><small>Coherencia y contexto (iluminativa)</small></div><i>→</i>
+    <div class="step"><span>03</span><b>Priorizar</b><small>Oportunidades de mejora</small></div><i>→</i>
+    <div class="step"><span>04</span><b>Valorar</b><small>Acciones y evidencias</small></div>
+  </div>
+  <div class="rv d3" style="margin-top:26px;max-width:760px">
+    <p style="font-weight:700;font-size:.9rem">Antes de terminar, completa esta frase:</p>
+    <p style="font-style:italic;color:var(--tinta-suave)">"Una oportunidad que vale la pena explorar es… porque…"</p>
+    <textarea id="exitText" placeholder="Tu reflexión final"></textarea>
+  </div>
+  <div class="audio-slot rv d4">
+    <span class="audio-icon">🎙</span>
+    <div class="audio-main"><b>Audio del expositor · Cierre</b>
+    <audio class="slide-audio" src="audio_8.mp3" data-audio controls preload="auto" playsinline></audio></div>
+  </div>
+  <div class="audio-help">🔊 <b>Audio por sección:</b> cada audio pertenece a su sección; al entrar en una nueva sección el audio anterior se detiene. Si el navegador bloquea la reproducción, usa el control de cada reproductor.</div>
+</section>
+
+<footer>
+  <div class="logo-unab" style="justify-content:center">
+    <div class="marca">unab</div>
+  </div>
+  <p class="fm"><b>Referencias</b><br><br>
+    Ausubel, D. (1968). Educational Psychology: A Cognitive View. Holt, Rinehart &amp; Winston.<br><br>
+    Beane, J. (1997). Curriculum Integration: Designing the Core of Democratic Education. Teachers College Press.<br><br>
+    Booth, T., &amp; Ainscow, M. (2011). Index for Inclusion: Developing learning and participation in schools (3.ª ed.). CSIE.<br><br>
+    Bruner, J. (1966). Toward a Theory of Instruction. Harvard University Press.<br><br>
+    De Zubiría, M. (2006). Los modelos pedagógicos. Fundación Alberto Merani.<br><br>
+    Dewey, J. (1938). Experience and Education. Macmillan.<br><br>
+    Flórez Ocampo, R. (1999). La pedagogía como saber. Universidad Pedagógica Nacional.<br><br>
+    Ministerio de Educación Nacional. (1998). Lineamientos Curriculares de Matemáticas. MEN.<br><br>
+    Ministerio de Educación Nacional. (2003). Estándares Básicos de Competencias en Matemáticas. MEN.<br><br>
+    Ministerio de Educación Nacional. (2016). Derechos Básicos de Aprendizaje de Matemáticas. MEN.<br><br>
+    Parlett, M., &amp; Hamilton, D. (1972). Evaluation as illumination: A new approach to the study of innovatory programs. Occasional Paper, University of Edinburgh.<br><br>
+    Stufflebeam, D. (1987). Evaluación iluminativa y evaluación CIPP. En Gimeno Sacristán y Pérez Gómez (Eds.), La enseñanza: su teoría y su práctica. Akal.<br><br>
+    Taba, H. (1962). Curriculum Development: Theory and Practice. Harcourt, Brace &amp; World.<br><br>
+    Tyler, R. (1949). Basic Principles of Curriculum and Instruction. University of Chicago Press.<br><br>
+    Vygotsky, L. (1978). Mind in Society: The Development of Higher Psychological Processes. Harvard University Press.
+  </p>
+  <div class="legal-f">UNIVERSIDAD AUTÓNOMA DE BUCARAMANGA · MODELOS CURRICULARES Y PERSPECTIVAS EVALUATIVAS CONTEMPORÁNEAS · JHAN PAUL MARTÍNEZ</div>
+</footer>
+
+<script>
+/* ===== Reveal gradual ===== */
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+/* ===== Rail activo ===== */
+const secs=[...document.querySelectorAll('section[id]')],dots=[...document.querySelectorAll('.rail a')];
+const io2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){dots.forEach(d=>d.classList.remove('act'));const i=secs.indexOf(e.target);if(dots[i])dots[i].classList.add('act')}})},{threshold:.3});
+secs.forEach(s=>io2.observe(s));
+/* ===== Tabs ===== */
+function tab(el,id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));el.classList.add('act');document.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('act'));document.getElementById(id).classList.add('act')}
+/* ===== Audio: uno por sección, autoplay tras interacción ===== */
+const audios=[...document.querySelectorAll('[data-audio]')];
+function stopAllAudio(){audios.forEach(a=>{a.pause()})}
+const io5=new IntersectionObserver(es=>{es.forEach(e=>{
+  if(e.isIntersecting){stopAllAudio();const a=e.target.querySelector('[data-audio]');
+    if(a&&a.dataset.armed){const p=a.play();if(p&&p.catch)p.catch(()=>{})}
+  }
+})},{threshold:.5});
+secs.forEach(s=>io5.observe(s));
+document.addEventListener('pointerdown',()=>{audios.forEach(a=>a.dataset.armed='1');},{once:true});
+/* ===== Quiz con calificación real ===== */
+const ANSWERS={1:'b',2:'a',3:'b'};
+document.querySelectorAll('.quiz label').forEach(l=>{l.querySelector('input').addEventListener('change',()=>{
+  const g=l.parentElement;g.querySelectorAll('label').forEach(x=>{x.classList.remove('sel');x.querySelector('input').checked=false});
+  l.querySelector('input').checked=true;l.classList.add('sel')})});
+function gradeQuiz(){
+  let score=0,done=0;
+  const msgs=[];
+  document.querySelectorAll('.quiz .qq').forEach(q=>{
+    const n=q.dataset.q,sel=q.querySelector('label.sel input');
+    q.querySelectorAll('label').forEach(l=>{l.classList.remove('ok','bad')});
+    if(!sel){msgs.push('Pregunta '+n+' sin responder. ');}
+    else{
+      done++;
+      const val=sel.value, ok=val===ANSWERS[n];
+      if(ok){score++;q.querySelectorAll('label').forEach(l=>{if(l.querySelector('input').value===ANSWERS[n])l.classList.add('ok')});}
+      else{q.querySelectorAll('label').forEach(l=>{if(l.querySelector('input').value===ANSWERS[n])l.classList.add('ok');if(l.classList.contains('sel'))l.classList.add('bad')});}
+    }
+  });
+  const r=document.getElementById('quizResult');
+  if(done<3){r.style.color='#cb1d11';r.textContent=msgs.join('')+'Responde las tres preguntas antes de verificar.';return}
+  r.style.color=score===3?'#008e6c':(score>=2?'#b07712':'#cb1d11');
+  r.textContent=score===3?'¡Excelente! 3/3: dominas el modelo iluminativo y la secuencia del microcurrículo.'
+    :(score===2?'2/3: muy bien. Revisa la pregunta marcada en rojo y su explicación en las pestañas de arriba.'
+    :'1/3: vuelve a las secciones 02 y 03; las opciones correctas quedaron marcadas en verde.');
+}
+/* ===== Simulación ===== */
+const SIM={1:'🧮 <b>Estación 1 · Conteo con objetos:</b> el estudiante junta dos grupos de bloques para formar sumas hasta 20 y las representa con el signo +. <b>Evidencia para el docente:</b> representa cantidades con material concreto (resultado de aprendizaje 1).',
+2:'👣 <b>Estación 2 · Recorrido numérico:</b> el niño salta en una recta numérica gigante trazada en el piso, agregando pasos: cuerpo, espacio y suma en un mismo movimiento. <b>Evidencia:</b> usa la recta numérica y explica su estrategia en voz alta (resultados 5 y 3).',
+3:'🃏 <b>Estación 3 · Retos de tarjetas:</b> parejas de estudiantes resuelven retos de sumas con tarjetas y comprueban en Matifis la retroalimentación inmediata. <b>Evidencia:</b> resuelve sumas hasta 20 y transfiere el aprendizaje a situaciones nuevas (resultados 3 y 6). Cierre: la docente registra la observación de cada estación como evidencia de proceso.'};
+let simDone=0;
+function simStep(n,el){if(el.classList.contains('on'))return;el.classList.add('on');document.getElementById('simMsg').innerHTML=SIM[n];simDone++;
+  if(simDone===3)setTimeout(()=>{document.getElementById('simMsg').innerHTML+=' <b>🎉 Simulación completa:</b> tres estaciones activas, desarrollo motor, colaboración y evidencia observable: así se vería la solución sugerida en el aula de primero.'},400)}
+</script>
+</body>
+</html>
